@@ -45,6 +45,18 @@ pθ = M0 @ p0
 (pt0_scatter,) = ax.plot([p0[0]], [p0[1]], 'o', label='base point p₀')
 (ptθ_scatter,) = ax.plot([pθ[0]], [pθ[1]], 'o', label='M(θ)·p₀')
 
+# trajectory: trace out M(θ)·p₀ as θ varies from 0 to 2π
+def compute_trajectory(a, b, p0, n=400):
+    theta_vals = np.linspace(0, 2*np.pi, n)
+    points = np.zeros((2, n))
+    for i, theta in enumerate(theta_vals):
+        M = elliptical_rotation(a, b, theta)
+        points[:, i] = M @ p0
+    return points
+
+traj = compute_trajectory(a0, b0, p0)
+(traj_line,) = ax.plot(traj[0], traj[1], 'r--', lw=1.5, alpha=0.6, label='trajectory of M(θ)·p₀')
+
 # radial guide lines
 (orig_line_p0,) = ax.plot([0, p0[0]], [0, p0[1]], '--', lw=1, alpha=0.5)
 (orig_line_pθ,) = ax.plot([0, pθ[0]], [0, pθ[1]], '--', lw=1, alpha=0.5)
@@ -93,6 +105,10 @@ def update(_):
 
     pt0_scatter.set_data([p0[0]], [p0[1]])
     ptθ_scatter.set_data([pθ[0]], [pθ[1]])
+
+    # update trajectory for current p0
+    traj = compute_trajectory(a, b, p0)
+    traj_line.set_data(traj[0], traj[1])
 
     # guide lines
     orig_line_p0.set_data([0, p0[0]], [0, p0[1]])

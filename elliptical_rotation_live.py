@@ -57,6 +57,12 @@ ax.set_xlim(-max(a0,b0)*1.4, max(a0,b0)*1.4)
 ax.set_ylim(-max(a0,b0)*1.4, max(a0,b0)*1.4)
 ax.set_title("Elliptical 'Rotation'  M(θ) = S⁻¹ R(θ) S")
 
+# matrix display text
+matrix_str = f"M = [{M0[0,0]: .3f}  {M0[0,1]: .3f}]\n    [{M0[1,0]: .3f}  {M0[1,1]: .3f}]"
+matrix_text = ax.text(0.02, 0.98, matrix_str, transform=ax.transAxes,
+                      verticalalignment='top', fontfamily='monospace',
+                      bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
 # --- sliders ------------------------------------------------------------------
 # regions: [left, bottom, width, height] in figure fraction coords
 ax_theta = plt.axes([0.12, 0.19, 0.76, 0.03])
@@ -91,6 +97,10 @@ def update(_):
     # guide lines
     orig_line_p0.set_data([0, p0[0]], [0, p0[1]])
     orig_line_pθ.set_data([0, pθ[0]], [0, pθ[1]])
+
+    # update matrix display
+    matrix_str = f"M = [{M[0,0]: .3f}  {M[0,1]: .3f}]\n    [{M[1,0]: .3f}  {M[1,1]: .3f}]"
+    matrix_text.set_text(matrix_str)
 
     # autoscale a bit when a/b change
     m = 1.4*max(a, b)

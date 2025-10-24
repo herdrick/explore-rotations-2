@@ -4,7 +4,7 @@ import matplotlib
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
+from matplotlib.widgets import Slider, Button
 
 def R2(theta):
     c, s = np.cos(theta), np.sin(theta)
@@ -14,7 +14,7 @@ P = np.array([[0,0, 1,1, 1,-1, -1,-1, -1,1, 0,0],
               [0,0, 1,-1, 1,  1, -1, 1, -1,-1, 0,0]])
 
 fig, ax = plt.subplots(figsize=(5,5))
-plt.subplots_adjust(bottom=0.22)  # space for slider
+plt.subplots_adjust(bottom=0.25)  # space for slider and button
 (ax_orig,) = ax.plot(P[0], P[1], '--', alpha=0.35, label='original')
 (ax_rot,)  = ax.plot(P[0], P[1], '-',  label='rotated')
 ax.set_aspect('equal', adjustable='box')
@@ -29,8 +29,11 @@ matrix_text = ax.text(0.02, 0.98, matrix_str, transform=ax.transAxes,
                       verticalalignment='top', fontfamily='monospace',
                       bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
 
-ax_theta = plt.axes([0.15, 0.08, 0.7, 0.04])
+ax_theta = plt.axes([0.15, 0.11, 0.7, 0.04])
 s_theta = Slider(ax_theta, 'θ (deg)', -180.0, 180.0, valinit=30.0)
+
+ax_reset = plt.axes([0.15, 0.05, 0.15, 0.04])
+btn_reset = Button(ax_reset, 'Reset')
 
 def on_change(val):
     R = R2(np.deg2rad(s_theta.val))
@@ -43,5 +46,9 @@ def on_change(val):
 
     fig.canvas.draw_idle()
 
+def reset(_):
+    s_theta.reset()
+
 s_theta.on_changed(on_change)
+btn_reset.on_clicked(reset)
 plt.show()

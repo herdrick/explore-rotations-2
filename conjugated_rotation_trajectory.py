@@ -1,7 +1,7 @@
 # elliptical_rotation_live.py
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
+from matplotlib.widgets import Slider, Button
 
 # --- math helpers -------------------------------------------------------------
 def R2(theta):
@@ -35,7 +35,7 @@ random_points = np.diag([a0, b0]) @ random_points  # scale to ellipse
 
 # --- figure & axes ------------------------------------------------------------
 fig, ax = plt.subplots(figsize=(6,6))
-plt.subplots_adjust(left=0.12, right=0.98, bottom=0.27)  # space for sliders
+plt.subplots_adjust(left=0.12, right=0.98, bottom=0.30)  # space for sliders and button
 
 # ellipse outline
 E = ellipse_points(a0, b0)
@@ -100,6 +100,9 @@ s_phi   = Slider(ax_phi,   'φ (deg)', -180.0, 180.0, valinit=phi0_deg)
 s_a     = Slider(ax_a,     'a (x-axis)', 0.3, 4.0, valinit=a0)
 s_b     = Slider(ax_b,     'b (y-axis)', 0.3, 4.0, valinit=b0)
 
+ax_reset = plt.axes([0.12, 0.02, 0.15, 0.03])
+btn_reset = Button(ax_reset, 'Reset')
+
 # --- update callback ----------------------------------------------------------
 def update(_):
     a = s_a.val
@@ -146,7 +149,15 @@ def update(_):
 
     fig.canvas.draw_idle()
 
+def reset(_):
+    s_theta.reset()
+    s_phi.reset()
+    s_a.reset()
+    s_b.reset()
+
 for slider in (s_theta, s_phi, s_a, s_b):
     slider.on_changed(update)
+
+btn_reset.on_clicked(reset)
 
 plt.show()

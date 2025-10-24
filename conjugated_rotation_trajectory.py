@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
+from pi_format import format_matrix_2x2
 
 # --- math helpers -------------------------------------------------------------
 def R2(theta):
@@ -83,7 +84,7 @@ ax.set_ylim(-max(a0,b0)*1.4, max(a0,b0)*1.4)
 ax.set_title("Elliptical 'Rotation'  M(θ) = S⁻¹ R(θ) S")
 
 # matrix display text
-matrix_str = f"M = [{M0[0,0]: .3f}  {M0[0,1]: .3f}]\n    [{M0[1,0]: .3f}  {M0[1,1]: .3f}]"
+matrix_str = "M = " + format_matrix_2x2(M0)
 matrix_text = ax.text(0.02, 0.98, matrix_str, transform=ax.transAxes,
                       verticalalignment='top', fontfamily='monospace',
                       bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
@@ -139,7 +140,7 @@ def update(_):
     orig_line_pθ.set_data([0, pθ[0]], [0, pθ[1]])
 
     # update matrix display
-    matrix_str = f"M = [{M[0,0]: .3f}  {M[0,1]: .3f}]\n    [{M[1,0]: .3f}  {M[1,1]: .3f}]"
+    matrix_str = "M = " + format_matrix_2x2(M)
     matrix_text.set_text(matrix_str)
 
     # autoscale a bit when a/b change

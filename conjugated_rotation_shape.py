@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
+from pi_format import format_matrix_2x2
 
 def R2(theta):
     c, s = np.cos(theta), np.sin(theta)
@@ -68,7 +69,7 @@ ax.set_title("From circle → ellipse → line via aspect ratio r")
 
 # matrix display text
 M0 = M_theta_r(theta0, r0)
-matrix_str = f"M = [{M0[0,0]: .3f}  {M0[0,1]: .3f}]\n    [{M0[1,0]: .3f}  {M0[1,1]: .3f}]"
+matrix_str = "M = " + format_matrix_2x2(M0)
 matrix_text = ax.text(0.02, 0.98, matrix_str, transform=ax.transAxes,
                       verticalalignment='top', fontfamily='monospace',
                       bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
@@ -116,7 +117,7 @@ def update(_):
     ax.set_xlim(-m, m); ax.set_ylim(-m, m)
 
     # update matrix display
-    matrix_str = f"M = [{M[0,0]: .3f}  {M[0,1]: .3f}]\n    [{M[1,0]: .3f}  {M[1,1]: .3f}]"
+    matrix_str = "M = " + format_matrix_2x2(M)
     matrix_text.set_text(matrix_str)
 
     fig.canvas.draw_idle()

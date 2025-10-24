@@ -23,12 +23,25 @@ ax.legend(loc='upper left')
 ax.set_xlim(-2,2)
 ax.set_ylim(-2,2)
 
+# matrix display text
+R0 = R2(np.deg2rad(30.0))  # initial matrix
+matrix_str = f"R = [{R0[0,0]: .3f}  {R0[0,1]: .3f}]\n    [{R0[1,0]: .3f}  {R0[1,1]: .3f}]"
+matrix_text = ax.text(0.02, 0.98, matrix_str, transform=ax.transAxes,
+                      verticalalignment='top', fontfamily='monospace',
+                      bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
 ax_theta = plt.axes([0.15, 0.08, 0.7, 0.04])
 s_theta = Slider(ax_theta, 'θ (deg)', -180.0, 180.0, valinit=30.0)
 
 def on_change(val):
-    Q = R2(np.deg2rad(s_theta.val)) @ P
+    R = R2(np.deg2rad(s_theta.val))
+    Q = R @ P
     ax_rot.set_data(Q[0], Q[1])
+
+    # update matrix display
+    matrix_str = f"R = [{R[0,0]: .3f}  {R[0,1]: .3f}]\n    [{R[1,0]: .3f}  {R[1,1]: .3f}]"
+    matrix_text.set_text(matrix_str)
+
     fig.canvas.draw_idle()
 
 s_theta.on_changed(on_change)

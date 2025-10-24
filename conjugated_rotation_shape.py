@@ -66,6 +66,13 @@ m = 1.4*max(r0, 1.0)
 ax.set_xlim(-m, m); ax.set_ylim(-m, m)
 ax.set_title("From circle → ellipse → line via aspect ratio r")
 
+# matrix display text
+M0 = M_theta_r(theta0, r0)
+matrix_str = f"M = [{M0[0,0]: .3f}  {M0[0,1]: .3f}]\n    [{M0[1,0]: .3f}  {M0[1,1]: .3f}]"
+matrix_text = ax.text(0.02, 0.98, matrix_str, transform=ax.transAxes,
+                      verticalalignment='top', fontfamily='monospace',
+                      bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
 # --- sliders
 ax_theta = plt.axes([0.12, 0.16, 0.76, 0.03])
 ax_phi   = plt.axes([0.12, 0.12, 0.76, 0.03])
@@ -104,6 +111,10 @@ def update(_):
     # autoscale with r
     m = 1.4*max(r, 1.0)
     ax.set_xlim(-m, m); ax.set_ylim(-m, m)
+
+    # update matrix display
+    matrix_str = f"M = [{M[0,0]: .3f}  {M[0,1]: .3f}]\n    [{M[1,0]: .3f}  {M[1,1]: .3f}]"
+    matrix_text.set_text(matrix_str)
 
     fig.canvas.draw_idle()
 

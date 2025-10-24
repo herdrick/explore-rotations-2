@@ -5,7 +5,7 @@ import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
-from pi_format import format_matrix_2x2
+from pi_format import format_matrix_2x2, format_angle_degrees
 
 def R2(theta):
     c, s = np.cos(theta), np.sin(theta)
@@ -31,7 +31,8 @@ matrix_text = ax.text(0.02, 0.98, matrix_str, transform=ax.transAxes,
                       bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
 
 ax_theta = plt.axes([0.15, 0.11, 0.7, 0.04])
-s_theta = Slider(ax_theta, 'θ (deg)', -180.0, 180.0, valinit=30.0)
+s_theta = Slider(ax_theta, 'θ', -180.0, 180.0, valinit=30.0, valfmt='%s')
+s_theta.valtext.set_text(format_angle_degrees(30.0))
 
 ax_reset = plt.axes([0.15, 0.05, 0.15, 0.04])
 btn_reset = Button(ax_reset, 'Reset')
@@ -44,6 +45,9 @@ def on_change(val):
     # update matrix display
     matrix_str = "R = " + format_matrix_2x2(R)
     matrix_text.set_text(matrix_str)
+
+    # update slider value display
+    s_theta.valtext.set_text(format_angle_degrees(s_theta.val))
 
     fig.canvas.draw_idle()
 

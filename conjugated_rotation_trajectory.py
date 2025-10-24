@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
-from pi_format import format_matrix_2x2
+from pi_format import format_matrix_2x2, format_angle_degrees
 
 # --- math helpers -------------------------------------------------------------
 def R2(theta):
@@ -96,10 +96,14 @@ ax_phi   = plt.axes([0.12, 0.15, 0.76, 0.03])
 ax_a     = plt.axes([0.12, 0.11, 0.76, 0.03])
 ax_b     = plt.axes([0.12, 0.07, 0.76, 0.03])
 
-s_theta = Slider(ax_theta, 'θ (deg)', -180.0, 180.0, valinit=theta0_deg)
-s_phi   = Slider(ax_phi,   'φ (deg)', -180.0, 180.0, valinit=phi0_deg)
+s_theta = Slider(ax_theta, 'θ', -180.0, 180.0, valinit=theta0_deg, valfmt='%s')
+s_phi   = Slider(ax_phi,   'φ', -180.0, 180.0, valinit=phi0_deg, valfmt='%s')
 s_a     = Slider(ax_a,     'a (x-axis)', 0.3, 4.0, valinit=a0)
 s_b     = Slider(ax_b,     'b (y-axis)', 0.3, 4.0, valinit=b0)
+
+# Set initial slider value displays
+s_theta.valtext.set_text(format_angle_degrees(theta0_deg))
+s_phi.valtext.set_text(format_angle_degrees(phi0_deg))
 
 ax_reset = plt.axes([0.12, 0.02, 0.15, 0.03])
 btn_reset = Button(ax_reset, 'Reset')
@@ -142,6 +146,10 @@ def update(_):
     # update matrix display
     matrix_str = "M = " + format_matrix_2x2(M)
     matrix_text.set_text(matrix_str)
+
+    # update slider value displays
+    s_theta.valtext.set_text(format_angle_degrees(s_theta.val))
+    s_phi.valtext.set_text(format_angle_degrees(s_phi.val))
 
     # autoscale a bit when a/b change
     m = 1.4*max(a, b)

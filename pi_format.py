@@ -103,3 +103,31 @@ def format_matrix_2x2(matrix, epsilon=2e-2):
     v11 = format_value(matrix[1, 1], epsilon)
 
     return f"[{v00}  {v01}]\n    [{v10}  {v11}]"
+
+
+def format_angle_degrees(degrees, epsilon=2e-2):
+    """
+    Format an angle in degrees, showing the radian value as a π fraction if appropriate.
+
+    Parameters:
+    -----------
+    degrees : float
+        Angle in degrees
+    epsilon : float
+        Tolerance for π fraction detection
+
+    Returns:
+    --------
+    str
+        Formatted string like "90° (π/2)" or "30° (0.524)" depending on whether
+        the radian value matches a π fraction
+    """
+    radians = np.deg2rad(degrees)
+    rad_str = format_value(radians, epsilon)
+
+    # If the radian string contains π, show it alongside degrees
+    if 'π' in rad_str:
+        return f"{degrees:.0f}° ({rad_str})"
+    else:
+        # Just show degrees if the radian value isn't a nice π fraction
+        return f"{degrees:.0f}°"

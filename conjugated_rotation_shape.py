@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
-from pi_format import format_matrix_2x2
+from pi_format import format_matrix_2x2, format_angle_degrees
 
 def R2(theta):
     c, s = np.cos(theta), np.sin(theta)
@@ -79,10 +79,14 @@ ax_theta = plt.axes([0.12, 0.16, 0.76, 0.03])
 ax_phi   = plt.axes([0.12, 0.12, 0.76, 0.03])
 ax_logr  = plt.axes([0.12, 0.08, 0.76, 0.03])
 
-s_theta = Slider(ax_theta, 'θ (deg)', -180.0, 180.0, valinit=theta0_deg)
-s_phi   = Slider(ax_phi,   'φ (deg)', -180.0, 180.0, valinit=phi0_deg)
+s_theta = Slider(ax_theta, 'θ', -180.0, 180.0, valinit=theta0_deg, valfmt='%s')
+s_phi   = Slider(ax_phi,   'φ', -180.0, 180.0, valinit=phi0_deg, valfmt='%s')
 # logr in [-3, +3] -> r in [1e-3, 1e+3]. Avoid exactly r=0.
 s_logr  = Slider(ax_logr,  'shape: log₁₀ r', -3.0, 3.0, valinit=logr0)
+
+# Set initial slider value displays
+s_theta.valtext.set_text(format_angle_degrees(theta0_deg))
+s_phi.valtext.set_text(format_angle_degrees(phi0_deg))
 
 ax_reset = plt.axes([0.12, 0.03, 0.15, 0.03])
 btn_reset = Button(ax_reset, 'Reset')
@@ -119,6 +123,10 @@ def update(_):
     # update matrix display
     matrix_str = "M = " + format_matrix_2x2(M)
     matrix_text.set_text(matrix_str)
+
+    # update slider value displays
+    s_theta.valtext.set_text(format_angle_degrees(s_theta.val))
+    s_phi.valtext.set_text(format_angle_degrees(s_phi.val))
 
     fig.canvas.draw_idle()
 

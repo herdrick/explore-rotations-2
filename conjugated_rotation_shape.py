@@ -23,6 +23,13 @@ theta0_deg = 30.0
 phi0_deg   = 10.0
 logr0      = 0.0   # log10(r); r=10**logr, so logr=0 -> r=1 (circle)
 
+# generate random points in unit circle
+np.random.seed(42)
+num_points = 100
+angles = np.random.uniform(0, 2*np.pi, num_points)
+radii = np.random.uniform(0, 1, num_points) ** 0.5  # sqrt for uniform disk distribution
+random_points_unit = np.vstack([radii * np.cos(angles), radii * np.sin(angles)])
+
 # --- figure
 fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(left=0.12, right=0.98, bottom=0.23)
@@ -44,6 +51,12 @@ pθ     = M_theta_r(theta0, r0) @ p0
 (ptθ_scatter,) = ax.plot([pθ[0]], [pθ[1]], 'o', label='M(θ,r)·p₀')
 (l0,) = ax.plot([0, p0[0]], [0, p0[1]], '--', lw=1, alpha=0.45)
 (l1,) = ax.plot([0, pθ[0]], [0, pθ[1]], '--', lw=1, alpha=0.45)
+
+# random points and their rotations
+random_points = np.diag([r0, 1]) @ random_points_unit  # scale to ellipse
+rotated_points = M_theta_r(theta0, r0) @ random_points
+random_scatter = ax.scatter(random_points[0], random_points[1], s=15, alpha=0.4, c='blue', label='random points')
+rotated_scatter = ax.scatter(rotated_points[0], rotated_points[1], s=15, alpha=0.4, c='red', label='M(θ,r)·points')
 
 ax.set_aspect('equal', adjustable='box')
 ax.grid(True, alpha=0.35)
@@ -81,6 +94,12 @@ def update(_):
     ptθ_scatter.set_data([pθ[0]], [pθ[1]])
     l0.set_data([0, p0[0]], [0, p0[1]])
     l1.set_data([0, pθ[0]], [0, pθ[1]])
+
+    # update random points and their rotations
+    scaled_random = np.diag([r, 1]) @ random_points_unit
+    rotated = M @ scaled_random
+    random_scatter.set_offsets(scaled_random.T)
+    rotated_scatter.set_offsets(rotated.T)
 
     # autoscale with r
     m = 1.4*max(r, 1.0)

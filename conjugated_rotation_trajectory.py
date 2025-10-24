@@ -25,6 +25,14 @@ a0, b0 = 2.0, 1.2
 theta0_deg = 30.0
 phi0_deg = 10.0
 
+# generate random points in unit circle, then scale by (a,b)
+np.random.seed(42)
+num_points = 100
+angles = np.random.uniform(0, 2*np.pi, num_points)
+radii = np.random.uniform(0, 1, num_points) ** 0.5  # sqrt for uniform disk distribution
+random_points = np.vstack([radii * np.cos(angles), radii * np.sin(angles)])  # unit circle
+random_points = np.diag([a0, b0]) @ random_points  # scale to ellipse
+
 # --- figure & axes ------------------------------------------------------------
 fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(left=0.12, right=0.98, bottom=0.27)  # space for sliders
@@ -44,6 +52,11 @@ M0 = elliptical_rotation(a0, b0, np.deg2rad(theta0_deg))
 pθ = M0 @ p0
 (pt0_scatter,) = ax.plot([p0[0]], [p0[1]], 'o', label='base point p₀')
 (ptθ_scatter,) = ax.plot([pθ[0]], [pθ[1]], 'o', label='M(θ)·p₀')
+
+# random points and their rotations
+rotated_points = M0 @ random_points
+random_scatter = ax.scatter(random_points[0], random_points[1], s=15, alpha=0.4, c='blue', label='random points')
+rotated_scatter = ax.scatter(rotated_points[0], rotated_points[1], s=15, alpha=0.4, c='red', label='M(θ)·points')
 
 # trajectory: trace out M(θ)·p₀ as θ varies from 0 to 2π
 def compute_trajectory(a, b, p0, n=400):
@@ -98,6 +111,9 @@ def update(_):
     E = ellipse_points(a, b)
     ell_line.set_data(E[0], E[1])
 
+    # rescale random points to match new ellipse dimensions
+    scaled_random = np.diag([a, b]) @ (np.diag([1/a0, 1/b0]) @ random_points)
+
     # base point p0(φ) on ellipse and rotated point pθ = M(θ)p0
     p0 = base_point(a, b, phi)
     M  = elliptical_rotation(a, b, theta)
@@ -105,6 +121,11 @@ def update(_):
 
     pt0_scatter.set_data([p0[0]], [p0[1]])
     ptθ_scatter.set_data([pθ[0]], [pθ[1]])
+
+    # update random points and their rotations
+    rotated = M @ scaled_random
+    random_scatter.set_offsets(scaled_random.T)
+    rotated_scatter.set_offsets(rotated.T)
 
     # update trajectory for current p0
     traj = compute_trajectory(a, b, p0)

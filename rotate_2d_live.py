@@ -19,7 +19,6 @@ plt.subplots_adjust(bottom=0.22)  # space for slider
 (ax_rot,)  = ax.plot(P[0], P[1], '-',  label='rotated')
 ax.set_aspect('equal', adjustable='box')
 ax.grid(True)
-ax.legend(loc='upper left')
 ax.set_xlim(-2,2)
 ax.set_ylim(-2,2)
 
